@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/tesseractd
+tesseractd.so
+tesseractd.dylib
+tesseractd.dll
+tesseractd.a
+tesseractd.lib
+tesseractd-test-*
+*.exe
+*.o
+*.obj
+*.lst
