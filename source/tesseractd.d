@@ -1,8 +1,6 @@
 module tesseractd;
 
-import std.stdio;
-import std.string;
-import std.conv;
+import dplug.core.nogc;
 
 alias TessOcrEngineMode = int;
 enum: TessOcrEngineMode {
@@ -30,7 +28,7 @@ enum: TessPageSegMode {
     PSM_COUNT
 }
 
-extern (C){
+extern (C) @nogc nothrow {
     TessBaseAPI TessBaseAPICreate();
     
     void TessBaseAPIDelete(TessBaseAPI handle);
@@ -69,29 +67,29 @@ extern (C){
 struct TessBaseAPI{
     void* p;
     
-    static TessBaseAPI opCall(){
+    static TessBaseAPI opCall() @nogc nothrow {
         return TessBaseAPICreate();
     }
     
-    int Init(string datapath, string language, TessOcrEngineMode oem){
-        return TessBaseAPIInit2(this, datapath.toStringz, language.toStringz, oem);
+    int Init(string datapath, string language, TessOcrEngineMode oem) @nogc nothrow {
+        return TessBaseAPIInit2(this, datapath.ptr, language.ptr, oem);
     }
 
-    void SetPageSegMode(TessPageSegMode mode){
+    void SetPageSegMode(TessPageSegMode mode) @nogc nothrow {
         TessBaseAPISetPageSegMode(this, mode);
     }
     
-    void SetImage(ubyte* imagedata, int width, int height, int bytes_per_pixel, int bytes_per_line){
+    void SetImage(ubyte* imagedata, int width, int height, int bytes_per_pixel, int bytes_per_line) @nogc nothrow {
         TessBaseAPISetImage(this, imagedata, width, height, bytes_per_pixel, bytes_per_line);
     }
 
-    string GetUTF8Text(){
+    string GetUTF8Text() @nogc nothrow { // returning string must be clean up with free(cast(char*)str.ptr);
         char* cstr = TessBaseAPIGetUTF8Text(this);
-        return cstr.to!string;
+        return stringIDup(cstr);
     }
 }
 
 
-void Destroy(TessBaseAPI handle){
+void Destroy(TessBaseAPI handle) @nogc nothrow {
     TessBaseAPIDelete(handle);
 }

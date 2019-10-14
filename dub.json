@@ -7,6 +7,9 @@
 	"license": "boost",
 	"name": "tesseractd",
     "version": "0.0.1",
+    "dependencies": {
+        "dplug:core": "*"
+    },
     "importPaths": ["source"],
     "sourcePaths": ["source"],
     "dflags-windows": ["-mtriple=x86_64-windows-msvc"],
